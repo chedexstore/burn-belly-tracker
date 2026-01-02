@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Belly Fat Burn Tracker</title>
+    <title>Belly Fat Burn Exercise Tracker</title>
     <style>
         * {
             margin: 0;
@@ -13,41 +13,69 @@
         
         :root {
             --primary: #2E7D32;
-            --primary-light: #4CAF50;
             --primary-dark: #1B5E20;
-            --light-gray: #f5f5f5;
-            --border: #e0e0e0;
-            --text: #333;
-            --text-light: #666;
-            --weekend: #f8f8f8;
+            --secondary: #FF9800;
+            --accent: #F44336;
+            --light: #F1F8E9;
+            --dark: #1A1A1A;
+            --gray: #757575;
+            --light-gray: #F5F5F5;
         }
         
         html, body {
             height: 100%;
             width: 100%;
             overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-size: 14px;
-            line-height: 1.5;
-            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background: #ffffff;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
             display: flex;
             flex-direction: column;
         }
         
-        /* Header - Minimalist */
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 100%;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* Header */
         .header {
             padding: 16px 24px;
             background: white;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 3px solid var(--primary);
+            flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 20px;
-            flex-shrink: 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
         }
         
         .title-container {
@@ -56,60 +84,62 @@
         
         .title-input {
             width: 100%;
-            font-size: 20px;
-            font-weight: 500;
-            color: var(--text);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-dark);
             border: none;
             background: transparent;
-            padding: 4px 0;
+            padding: 8px 0;
             font-family: inherit;
-            letter-spacing: -0.3px;
         }
         
         .title-input:focus {
             outline: none;
         }
         
-        .title-input::placeholder {
-            color: var(--text-light);
-        }
-        
         .controls {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             align-items: center;
             flex-shrink: 0;
         }
         
         .btn {
-            padding: 8px 16px;
-            background: white;
-            color: var(--text);
-            border: 1px solid var(--border);
-            border-radius: 4px;
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-            transition: all 0.2s;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            white-space: nowrap;
         }
         
         .btn:hover {
-            background: var(--light-gray);
-            border-color: #ccc;
-        }
-        
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        
-        .btn-primary:hover {
             background: var(--primary-dark);
-            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background: #F57C00;
+        }
+        
+        .btn-danger {
+            background: var(--accent);
+        }
+        
+        .btn-danger:hover {
+            background: #D32F2F;
         }
         
         /* Main Content Area */
@@ -120,72 +150,161 @@
             background: white;
         }
         
-        /* Sidebar - Minimalist */
-        .sidebar {
-            width: 300px;
-            background: white;
-            border-right: 1px solid var(--border);
+        /* Left Panel - Exercise Dashboard */
+        .dashboard-panel {
+            width: 350px;
+            background: var(--light-gray);
+            border-right: 2px solid #e0e0e0;
             display: flex;
             flex-direction: column;
             overflow: hidden;
             flex-shrink: 0;
         }
         
-        .sidebar-section {
+        .panel-header {
             padding: 20px;
-            border-bottom: 1px solid var(--border);
+            background: var(--primary);
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
         }
         
-        .sidebar-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text);
-            margin-bottom: 16px;
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        /* Goal Section */
+        .goal-section {
+            margin-bottom: 30px;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .goal-header {
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: space-between;
+            margin-bottom: 15px;
         }
         
-        .sidebar-title::before {
-            content: '';
-            width: 4px;
-            height: 16px;
-            background: var(--primary);
-            border-radius: 2px;
+        .goal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        /* YouTube Input */
-        .input-group {
-            margin-bottom: 16px;
+        .goal-edit-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s;
         }
         
-        .input-group input {
+        .goal-edit-btn:hover {
+            color: var(--primary-dark);
+        }
+        
+        .goal-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--dark);
+            background: var(--light);
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid var(--secondary);
+            min-height: 80px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .goal-text.empty {
+            color: var(--gray);
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .goal-input {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            font-size: 13px;
-            transition: border-color 0.2s;
-            background: white;
+            min-height: 100px;
+            padding: 12px;
+            border: 2px solid var(--primary);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: vertical;
+            margin-bottom: 10px;
         }
         
-        .input-group input:focus {
+        .goal-input:focus {
             outline: none;
-            border-color: var(--primary);
+            border-color: var(--primary-dark);
         }
         
-        /* Playlist */
-        .playlist {
+        /* YouTube Playlist Manager */
+        .playlist-manager {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: var(--primary);
+        }
+        
+        .yt-input-group {
+            margin-bottom: 15px;
+        }
+        
+        .yt-input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 10px;
+            transition: border-color 0.3s;
+        }
+        
+        .yt-input-group input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .yt-playlist {
             max-height: 200px;
             overflow-y: auto;
-            border: 1px solid var(--border);
-            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
             background: white;
         }
         
-        .playlist-item {
-            padding: 10px 12px;
-            border-bottom: 1px solid var(--border);
+        .yt-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -193,90 +312,50 @@
             transition: background 0.2s;
         }
         
-        .playlist-item:hover {
-            background: var(--light-gray);
+        .yt-item:hover {
+            background: var(--light);
         }
         
-        .playlist-item.active {
-            background: var(--light-gray);
-            border-left: 3px solid var(--primary);
+        .yt-item.active {
+            background: var(--primary);
+            color: white;
         }
         
-        .playlist-item-title {
-            flex: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            font-size: 13px;
-        }
-        
-        .playlist-item-actions {
+        .yt-item-actions {
             display: flex;
-            gap: 4px;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        
-        .playlist-item:hover .playlist-item-actions {
-            opacity: 1;
+            gap: 5px;
         }
         
         .icon-btn {
-            width: 24px;
-            height: 24px;
-            border-radius: 3px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
             border: none;
             background: transparent;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 13px;
-            color: var(--text-light);
             transition: background 0.2s;
         }
         
         .icon-btn:hover {
-            background: rgba(0,0,0,0.05);
-            color: var(--text);
-        }
-        
-        /* Start Video Button */
-        .start-video-container {
-            margin-top: 16px;
-        }
-        
-        .start-video-btn {
-            width: 100%;
-            padding: 12px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: background 0.2s;
-        }
-        
-        .start-video-btn:hover {
-            background: var(--primary-dark);
+            background: rgba(255,255,255,0.2);
         }
         
         /* Camera Section */
+        .camera-section {
+            margin-bottom: 30px;
+        }
+        
         .camera-preview {
             width: 100%;
-            height: 150px;
-            background: var(--light-gray);
-            border-radius: 4px;
+            height: 200px;
+            background: #333;
+            border-radius: 8px;
             overflow: hidden;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             position: relative;
-            border: 1px solid var(--border);
         }
         
         #cameraView {
@@ -285,35 +364,120 @@
             object-fit: cover;
         }
         
-        .camera-controls {
+        .weight-input-group {
+            margin-bottom: 15px;
+        }
+        
+        .weight-input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+        
+        .weight-input-container {
             display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .weight-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .weight-input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .weight-type-select {
+            padding: 10px 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .weight-type-select:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .photo-type-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .photo-type-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .photo-type-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .photo-type-btn:hover:not(.active) {
+            background: var(--light);
         }
         
         .captured-images {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 12px;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .captured-image-container {
+            position: relative;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .captured-image-container:hover {
+            transform: scale(1.05);
         }
         
         .captured-image {
             width: 100%;
-            height: 60px;
+            height: 80px;
             object-fit: cover;
-            border-radius: 3px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: transform 0.2s;
         }
         
-        .captured-image:hover {
-            transform: scale(1.02);
+        .image-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 4px 6px;
+            font-size: 10px;
+        }
+        
+        .image-weight {
+            font-weight: bold;
+            color: #FFD700;
         }
         
         /* Main Tracker Area */
-        .tracker-area {
+        .tracker-panel {
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -321,42 +485,41 @@
         }
         
         .tracker-header {
-            padding: 16px 24px;
+            padding: 15px 24px;
             background: white;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 2px solid #e0e0e0;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-shrink: 0;
         }
         
         .month-selector {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
         }
         
         .month-btn {
-            padding: 6px 12px;
-            background: white;
-            color: var(--text);
-            border: 1px solid var(--border);
-            border-radius: 4px;
+            padding: 8px 16px;
+            background: var(--light);
+            color: var(--primary-dark);
+            border: 2px solid var(--primary);
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 13px;
-            transition: all 0.2s;
+            font-weight: 600;
+            transition: all 0.3s;
         }
         
         .month-btn:hover {
-            background: var(--light-gray);
-            border-color: #ccc;
+            background: var(--primary);
+            color: white;
         }
         
         #currentMonth {
-            font-size: 15px;
-            font-weight: 500;
-            color: var(--text);
-            min-width: 140px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            min-width: 180px;
             text-align: center;
         }
         
@@ -364,47 +527,49 @@
             flex: 1;
             overflow: auto;
             padding: 20px;
-            background: white;
+            background: #f9f9f9;
         }
         
-        /* Table - Minimalist */
         table {
             border-collapse: collapse;
             width: 100%;
-            font-size: 13px;
+            font-size: 14px;
             background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         th, td {
             padding: 0;
             text-align: center;
-            border: 1px solid var(--border);
-            height: 44px;
+            border: 1px solid #e0e0e0;
+            height: 50px;
             box-sizing: border-box;
         }
         
         thead th {
             position: sticky;
             top: 0;
-            background: white;
-            font-weight: 500;
-            color: var(--text);
+            background: var(--primary);
+            font-weight: 600;
+            color: white;
             z-index: 10;
-            border-bottom: 2px solid var(--border);
         }
         
         .exercise-cell {
             position: sticky;
             left: 0;
             background: white;
-            font-weight: 400;
-            color: var(--text);
-            min-width: 180px;
+            font-weight: 500;
+            color: var(--dark);
+            min-width: 200px;
+            max-width: 200px;
             text-align: left;
             z-index: 9;
-            border-right: 2px solid var(--border);
-            padding: 0 12px;
-            background: white;
+            border-right: 2px solid var(--primary);
+            padding: 0 !important;
+            background: var(--light);
         }
         
         .corner-cell {
@@ -412,55 +577,105 @@
             top: 0;
             left: 0;
             z-index: 11;
-            background: white;
-            font-weight: 500;
-            min-width: 180px;
-            border-right: 2px solid var(--border);
-            border-bottom: 2px solid var(--border);
+            background: var(--primary-dark);
+            font-weight: 700;
+            min-width: 200px;
+            border-right: 2px solid var(--primary);
         }
         
         .day-header {
-            padding: 8px 4px;
-            font-size: 11px;
+            padding: 10px 5px;
+            font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            min-width: 50px;
+            min-width: 60px;
         }
         
         .day-number {
-            font-size: 12px;
-            color: var(--text);
+            font-size: 14px;
+            color: white;
             display: block;
             margin-top: 2px;
-            font-weight: 400;
+            font-weight: 700;
         }
         
-        /* Weekend styling */
+        /* Weekend styling - Restored */
         .weekend-header {
-            background: var(--weekend);
+            background: #E91E63 !important;
         }
         
         .weekend-cell {
-            background: var(--weekend);
+            background: #FFF0F5 !important;
         }
         
-        /* Exercise input */
+        /* Exercise cell container styling */
+        .habit-cell-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            height: 100%;
+            padding: 0 15px;
+            position: relative;
+        }
+        
+        /* Exercise input styling */
         .exercise-input {
+            flex: 1;
             width: 100%;
             border: none;
             background: transparent;
             font-family: inherit;
             font-size: 13px;
-            padding: 12px 0;
-            color: var(--text);
+            color: var(--dark);
             outline: none;
+            font-weight: 500;
+            padding: 0;
+            margin: 0;
         }
         
         .exercise-input:focus {
-            color: var(--text);
+            color: var(--primary-dark);
         }
         
-        /* Cell styling */
+        /* Delete button styling - RED TEXT X on right edge */
+        .delete-btn {
+            background: none;
+            color: #f44336; /* Red text color */
+            border: none;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            line-height: 1;
+        }
+        
+        .delete-btn:hover {
+            color: #d32f2f; /* Darker red on hover */
+            transform: scale(1.2);
+        }
+        
+        .delete-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* For the add new exercise row */
+        .add-row .habit-cell-container {
+            justify-content: flex-start;
+        }
+        
+        .add-row .exercise-input {
+            width: 100%;
+        }
+        
         .cell {
             width: 100%;
             height: 100%;
@@ -468,12 +683,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.2s;
+            transition: background-color 0.3s;
             position: relative;
         }
         
         .cell:hover {
-            background-color: var(--light-gray);
+            background-color: var(--light);
         }
         
         .cell.completed {
@@ -483,8 +698,8 @@
         .cell.completed::after {
             content: '✓';
             color: var(--primary);
-            font-size: 18px;
-            font-weight: 400;
+            font-size: 24px;
+            font-weight: 700;
             position: absolute;
         }
         
@@ -494,9 +709,9 @@
         
         .cell.skipped::after {
             content: '✗';
-            color: #f44336;
-            font-size: 18px;
-            font-weight: 400;
+            color: var(--accent);
+            font-size: 24px;
+            font-weight: 700;
             position: absolute;
         }
         
@@ -506,46 +721,19 @@
         
         .cell.partial::after {
             content: '~';
-            color: #FF9800;
-            font-size: 18px;
-            font-weight: 400;
+            color: var(--secondary);
+            font-size: 24px;
+            font-weight: 700;
             position: absolute;
         }
         
-        /* Delete button */
-        .delete-btn {
-            background: transparent;
-            color: #ccc;
-            border: none;
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            font-size: 16px;
+        .cell-actions {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: all 0.2s;
-            margin-left: 8px;
+            gap: 5px;
+            margin-left: 10px;
         }
         
-        .exercise-cell:hover .delete-btn {
-            opacity: 1;
-            color: var(--text-light);
-        }
-        
-        .delete-btn:hover {
-            color: #f44336;
-        }
-        
-        .exercise-cell-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-        }
-        
-        /* Video Overlay - Minimalist */
+        /* Video Player Overlay - Full Screen */
         .video-overlay {
             display: none;
             position: fixed;
@@ -553,7 +741,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: white;
+            background: rgba(0, 0, 0, 0.95);
             z-index: 2000;
             flex-direction: column;
             align-items: center;
@@ -573,7 +761,8 @@
         #fullScreenPlayer {
             width: 100%;
             height: 100%;
-            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
         }
         
         .video-controls {
@@ -582,66 +771,144 @@
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 12px;
-            background: white;
-            padding: 12px 20px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px 25px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
         }
         
         .video-control-btn {
-            padding: 10px 20px;
-            background: white;
-            color: var(--text);
-            border: 1px solid var(--border);
-            border-radius: 4px;
+            padding: 12px 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 30px;
             cursor: pointer;
-            font-weight: 500;
-            font-size: 14px;
+            font-weight: 600;
+            font-size: 16px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
+            gap: 10px;
+            transition: all 0.3s;
         }
         
         .video-control-btn:hover {
-            background: var(--light-gray);
-            border-color: #ccc;
-        }
-        
-        .video-control-btn.primary {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        
-        .video-control-btn.primary:hover {
             background: var(--primary-dark);
-            border-color: var(--primary-dark);
+            transform: scale(1.05);
+        }
+        
+        .video-control-btn.stop {
+            background: var(--accent);
+        }
+        
+        .video-control-btn.stop:hover {
+            background: #D32F2F;
         }
         
         .close-video {
             position: absolute;
             top: 20px;
             right: 20px;
-            width: 40px;
-            height: 40px;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            color: var(--text);
-            font-size: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
+            transition: all 0.3s;
         }
         
         .close-video:hover {
-            background: var(--light-gray);
-            border-color: #ccc;
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+        
+        /* YouTube Player Section - Hidden initially */
+        .player-section {
+            padding: 20px;
+            background: white;
+            border-top: 2px solid #e0e0e0;
+            flex-shrink: 0;
+            display: none;
+        }
+        
+        .player-section.active {
+            display: block;
+        }
+        
+        .player-container {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        #player {
+            flex: 1;
+            height: 200px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .player-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 150px;
+        }
+        
+        .control-btn {
+            padding: 10px 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .control-btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        /* Start Video Button */
+        .start-video-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .start-video-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
         }
         
         /* Notification */
@@ -649,16 +916,16 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            padding: 12px 20px;
-            background: var(--text);
+            padding: 15px 25px;
+            background: var(--primary);
             color: white;
-            border-radius: 4px;
+            border-radius: 8px;
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.3s, transform 0.3s;
             z-index: 1000;
-            font-size: 13px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
         
         .notification.show {
@@ -674,7 +941,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.8);
             z-index: 1001;
             align-items: center;
             justify-content: center;
@@ -682,20 +949,19 @@
         
         .modal-content {
             background: white;
-            padding: 24px;
-            border-radius: 8px;
-            max-width: 400px;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
-            border: 1px solid var(--border);
         }
         
         .modal-header {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text);
-            margin-bottom: 16px;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -704,16 +970,81 @@
         .close-modal {
             background: none;
             border: none;
-            font-size: 20px;
+            font-size: 24px;
             cursor: pointer;
-            color: var(--text-light);
-            padding: 4px;
+            color: var(--gray);
+        }
+        
+        .modal-image-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        #modalImage {
+            width: 100%;
+            border-radius: 8px;
+            display: block;
+        }
+        
+        .image-info-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 12px 15px;
+            font-size: 14px;
+        }
+        
+        .image-info-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #FFD700;
+        }
+        
+        .image-weight-large {
+            font-size: 20px;
+            font-weight: bold;
+            color: #FFD700;
+        }
+        
+        .progress-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-dark);
         }
         
         /* Responsive */
         @media (max-width: 1200px) {
-            .sidebar {
-                width: 280px;
+            .dashboard-panel {
+                width: 300px;
+            }
+            
+            .exercise-cell, .corner-cell {
+                min-width: 180px;
+                max-width: 180px;
             }
         }
         
@@ -722,23 +1053,41 @@
                 flex-direction: column;
             }
             
-            .sidebar {
+            .dashboard-panel {
                 width: 100%;
                 height: auto;
-                max-height: 400px;
+                max-height: 500px;
                 border-right: none;
-                border-bottom: 1px solid var(--border);
+                border-bottom: 2px solid #e0e0e0;
             }
             
-            .sidebar-content {
-                display: flex;
-                gap: 24px;
+            .panel-content {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
                 padding: 20px;
             }
             
+            .goal-section {
+                grid-column: 1 / -1;
+            }
+            
             .playlist-manager, .camera-section {
-                flex: 1;
-                margin: 0;
+                margin-bottom: 0;
+            }
+            
+            .player-container {
+                flex-direction: column;
+            }
+            
+            #player {
+                width: 100%;
+                height: 300px;
+            }
+            
+            .video-container {
+                width: 95%;
+                height: 70%;
             }
         }
         
@@ -746,28 +1095,33 @@
             .header {
                 flex-wrap: wrap;
                 padding: 12px 16px;
-                gap: 12px;
             }
             
             .controls {
                 order: 3;
                 width: 100%;
-                margin-top: 8px;
+                margin-top: 10px;
+                justify-content: center;
             }
             
             .tracker-header {
                 flex-direction: column;
-                gap: 12px;
-                padding: 12px 16px;
+                gap: 15px;
+                padding: 15px;
             }
             
-            .sidebar-content {
-                flex-direction: column;
+            .panel-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .day-header {
+                min-width: 50px;
             }
             
             .video-container {
-                width: 95%;
-                height: 70%;
+                width: 100%;
+                height: 60%;
             }
             
             .video-controls {
@@ -777,8 +1131,8 @@
                 width: 90%;
             }
             
-            .exercise-cell, .corner-cell {
-                min-width: 160px;
+            .progress-stats {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -787,73 +1141,137 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <div class="title-container">
-                <input type="text" class="title-input" id="pageTitle" value="Exercise Tracker" maxlength="40">
+            <div class="logo-container">
+                <div class="logo">BF</div>
+                <div class="title-container">
+                    <input type="text" class="title-input" id="pageTitle" value="🔥 Belly Fat Burn Exercise Tracker" maxlength="50">
+                </div>
             </div>
             <div class="controls">
                 <button class="btn" id="clearMonthBtn">
-                    Clear Month
+                    <span>🗑️</span> Clear Month
                 </button>
-                <button class="btn" id="addWorkoutBtn">
-                    Add Exercise
+                <button class="btn btn-secondary" id="addWorkoutBtn">
+                    <span>➕</span> Add Workout
                 </button>
-                <button class="btn btn-primary" id="printBtn">
-                    Print
+                <button class="btn" id="printBtn">
+                    <span>🖨️</span> Print
                 </button>
             </div>
         </div>
         
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <div class="sidebar-section">
-                    <div class="sidebar-title">Workout Videos</div>
-                    <div class="input-group">
-                        <input type="text" id="ytUrlInput" placeholder="YouTube video URL">
-                    </div>
-                    <button class="btn btn-primary" id="addYtBtn" style="width: 100%; margin-bottom: 16px;">
-                        Add to Playlist
-                    </button>
-                    <div class="playlist" id="ytPlaylist">
-                        <!-- Playlist items will be added here -->
-                    </div>
-                    <div class="start-video-container">
-                        <button class="start-video-btn" id="startVideoBtn">
-                            Start Workout
-                        </button>
-                    </div>
+            <!-- Left Dashboard Panel -->
+            <div class="dashboard-panel">
+                <div class="panel-header">
+                    📊 Exercise Dashboard
                 </div>
-                
-                <div class="sidebar-section">
-                    <div class="sidebar-title">Progress Photos</div>
-                    <div class="camera-preview">
-                        <video id="cameraView" autoplay></video>
+                <div class="panel-content">
+                    <!-- Goal Section -->
+                    <div class="goal-section">
+                        <div class="goal-header">
+                            <div class="goal-title">
+                                <span>🎯</span> My Goal / Why I Want to Lose Belly Fat
+                            </div>
+                            <button class="goal-edit-btn" id="editGoalBtn">
+                                <span>✏️</span> Edit
+                            </button>
+                        </div>
+                        <div class="goal-text" id="goalText">
+                            I want to lose belly fat to improve my health, feel more confident in my clothes, and have more energy to play with my kids. My target is to lose 15 pounds in 3 months!
+                        </div>
+                        <div class="goal-input-container" id="goalInputContainer" style="display: none;">
+                            <textarea class="goal-input" id="goalInput" placeholder="Why do you want to lose belly fat? What are your goals? Write your motivation here..." maxlength="500"></textarea>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn" id="saveGoalBtn">Save Goal</button>
+                                <button class="btn btn-secondary" id="cancelGoalBtn">Cancel</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="camera-controls">
-                        <button class="btn" id="startCameraBtn">
-                            Start Camera
-                        </button>
-                        <button class="btn btn-primary" id="captureBtn">
-                            Capture
+                    
+                    <!-- YouTube Playlist Manager -->
+                    <div class="playlist-manager">
+                        <div class="section-title">
+                            <span>📺</span> YouTube Workout Playlist
+                        </div>
+                        <div class="yt-input-group">
+                            <input type="text" id="ytUrlInput" placeholder="Paste YouTube video URL...">
+                            <button class="btn" id="addYtBtn" style="width: 100%;">
+                                <span>➕</span> Add to Playlist
+                            </button>
+                        </div>
+                        <div class="yt-playlist" id="ytPlaylist">
+                            <!-- Playlist items will be added here -->
+                        </div>
+                        
+                        <!-- Start Video Button -->
+                        <button class="start-video-btn" id="startVideoBtn">
+                            <span>▶️</span> START WORKOUT VIDEOS
                         </button>
                     </div>
-                    <div class="captured-images" id="capturedImages">
-                        <!-- Captured images will appear here -->
+                    
+                    <!-- Camera Section -->
+                    <div class="camera-section">
+                        <div class="section-title">
+                            <span>📷</span> Progress Photos & Weight
+                        </div>
+                        <div class="camera-preview">
+                            <video id="cameraView" autoplay></video>
+                        </div>
+                        
+                        <!-- Photo Type Selection -->
+                        <div class="photo-type-buttons">
+                            <button class="photo-type-btn active" id="beforeBtn" data-type="before">
+                                📸 Before
+                            </button>
+                            <button class="photo-type-btn" id="progressBtn" data-type="progress">
+                                📊 Progress
+                            </button>
+                            <button class="photo-type-btn" id="afterBtn" data-type="after">
+                                🏆 After
+                            </button>
+                        </div>
+                        
+                        <!-- Weight Input -->
+                        <div class="weight-input-group">
+                            <label for="weightInput">Weight (Optional):</label>
+                            <div class="weight-input-container">
+                                <input type="number" id="weightInput" class="weight-input" placeholder="Enter weight" step="0.1" min="0">
+                                <select id="weightUnit" class="weight-type-select">
+                                    <option value="lbs">lbs</option>
+                                    <option value="kg">kg</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                            <button class="btn btn-secondary" id="startCameraBtn">
+                                <span>📸</span> Start Camera
+                            </button>
+                            <button class="btn" id="captureBtn">
+                                <span>⭕</span> Capture Photo
+                            </button>
+                        </div>
+                        
+                        <!-- Captured Images -->
+                        <div class="captured-images" id="capturedImages">
+                            <!-- Captured images will appear here -->
+                        </div>
                     </div>
                 </div>
             </div>
             
             <!-- Main Tracker Area -->
-            <div class="tracker-area">
+            <div class="tracker-panel">
                 <div class="tracker-header">
                     <div class="month-selector">
-                        <button class="month-btn" id="prevMonth">←</button>
+                        <button class="month-btn" id="prevMonth">&larr; Previous</button>
                         <div id="currentMonth">January 2023</div>
-                        <button class="month-btn" id="nextMonth">→</button>
+                        <button class="month-btn" id="nextMonth">Next &rarr;</button>
                     </div>
-                    <div style="color: var(--text-light); font-size: 13px;">
-                        Click cells to mark completion
+                    <div style="font-weight: 600; color: var(--primary);">
+                        🎯 Daily Exercise Completion
                     </div>
                 </div>
                 
@@ -869,26 +1287,52 @@
                 </div>
             </div>
         </div>
+        
+        <!-- YouTube Player Section (Hidden Initially) -->
+        <div class="player-section" id="playerSection">
+            <div class="player-container">
+                <div id="player"></div>
+                <div class="player-controls">
+                    <button class="control-btn" id="playBtn">
+                        <span>▶️</span> Play
+                    </button>
+                    <button class="control-btn" id="pauseBtn">
+                        <span>⏸️</span> Pause
+                    </button>
+                    <button class="control-btn" id="nextBtn">
+                        <span>⏭️</span> Next Video
+                    </button>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="loopToggle" checked>
+                        <label for="loopToggle">Loop Current Video</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="autoPlayToggle" checked>
+                        <label for="autoPlayToggle">Auto-play Next</label>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     
-    <!-- Video Overlay -->
+    <!-- Video Overlay (Full Screen) -->
     <div class="video-overlay" id="videoOverlay">
-        <button class="close-video" id="closeVideoBtn">×</button>
+        <button class="close-video" id="closeVideoBtn">&times;</button>
         <div class="video-container">
             <div id="fullScreenPlayer"></div>
         </div>
         <div class="video-controls">
             <button class="video-control-btn" id="fsPlayBtn">
-                Play
+                <span>▶️</span> Play
             </button>
             <button class="video-control-btn" id="fsPauseBtn">
-                Pause
+                <span>⏸️</span> Pause
             </button>
             <button class="video-control-btn" id="fsNextBtn">
-                Next
+                <span>⏭️</span> Next Video
             </button>
-            <button class="video-control-btn primary" id="stopVideoBtn">
-                Stop
+            <button class="video-control-btn stop" id="stopVideoBtn">
+                <span>⏹️</span> Stop & Hide
             </button>
         </div>
     </div>
@@ -897,18 +1341,31 @@
     <div class="modal" id="imageModal">
         <div class="modal-content">
             <div class="modal-header">
-                <span>Progress Photo</span>
-                <button class="close-modal" id="closeModal">×</button>
+                <span id="modalTitle">Progress Photo</span>
+                <button class="close-modal" id="closeModal">&times;</button>
             </div>
-            <img id="modalImage" src="" style="width: 100%; border-radius: 4px; border: 1px solid var(--border);">
-            <div style="margin-top: 16px; text-align: center;">
-                <button class="btn" id="deleteImageBtn" style="width: 100%;">Delete Photo</button>
+            <div class="modal-image-container">
+                <img id="modalImage" src="">
+                <div class="image-info-overlay">
+                    <div class="image-info-title" id="modalPhotoType"></div>
+                    <div id="modalDate"></div>
+                    <div>Weight: <span class="image-weight-large" id="modalWeight"></span></div>
+                </div>
+            </div>
+            
+            <!-- Progress Stats -->
+            <div class="progress-stats" id="progressStats">
+                <!-- Stats will be populated dynamically -->
+            </div>
+            
+            <div style="margin-top: 20px; text-align: center;">
+                <button class="btn btn-danger" id="deleteImageBtn">Delete Photo</button>
             </div>
         </div>
     </div>
     
     <!-- Notification -->
-    <div id="notification" class="notification"></div>
+    <div id="notification" class="notification">Saved</div>
 
     <!-- YouTube IFrame API -->
     <script src="https://www.youtube.com/iframe_api"></script>
@@ -919,16 +1376,37 @@
         let currentMonth = currentDate.getMonth();
         let currentYear = currentDate.getFullYear();
         
-        // Exercise data
+        // Exercise data for belly fat burn - EXPANDED LIST
         let exercises = [
             "Plank (60 sec)",
-            "Mountain Climbers (30)",
-            "Russian Twists (20)",
-            "Leg Raises (15)",
-            "Bicycle Crunches (30)",
-            "Side Plank (30 sec)",
-            "Burpees (10)",
-            "Jumping Jacks (50)"
+            "Mountain Climbers (30 reps)",
+            "Russian Twists (20 reps)",
+            "Leg Raises (15 reps)",
+            "Bicycle Crunches (30 reps)",
+            "Side Plank (30 sec each)",
+            "Burpees (10 reps)",
+            "Jumping Jacks (50 reps)",
+            "High Knees (60 sec)",
+            "Flutter Kicks (30 reps)",
+            "Heel Touches (20 reps)",
+            "Scissor Kicks (30 reps)",
+            "Sit-ups (15 reps)",
+            "V-Ups (10 reps)",
+            "Toe Touches (20 reps)",
+            "Reverse Crunches (15 reps)",
+            "Cobra Stretch (30 sec)",
+            "Superman (30 sec)",
+            "Dead Bug (20 reps)",
+            "Bird Dog (15 reps each)",
+            "Hollow Hold (30 sec)",
+            "Bear Crawl (60 sec)",
+            "Inchworm (10 reps)",
+            "Wall Sit (60 sec)",
+            "Squats (20 reps)",
+            "Lunges (15 reps each)",
+            "Push-ups (10 reps)",
+            "Tricep Dips (15 reps)",
+            "Glute Bridges (20 reps)"
         ];
         
         // YouTube playlist data
@@ -940,17 +1418,35 @@
         // Camera and images
         let cameraStream = null;
         let capturedImages = [];
+        let currentPhotoType = "before"; // "before", "progress", or "after"
+        
+        // Goal/Motivation data
+        let userGoal = "";
         
         // Load saved data
         let exerciseData = JSON.parse(localStorage.getItem('exerciseData')) || {};
-        let savedTitle = localStorage.getItem('exerciseTitle') || "Exercise Tracker";
+        let savedTitle = localStorage.getItem('exerciseTitle') || "🔥 Belly Fat Burn Exercise Tracker";
         let savedPlaylist = JSON.parse(localStorage.getItem('youtubePlaylist')) || [];
         let savedImages = JSON.parse(localStorage.getItem('progressImages')) || [];
+        let savedGoal = localStorage.getItem('userGoal') || "I want to lose belly fat to improve my health, feel more confident in my clothes, and have more energy to play with my kids. My target is to lose 15 pounds in 3 months!";
         
         // Initialize
         document.getElementById('pageTitle').value = savedTitle;
         youtubePlaylist = savedPlaylist;
         capturedImages = savedImages;
+        userGoal = savedGoal;
+        
+        // Update goal display
+        function updateGoalDisplay() {
+            const goalText = document.getElementById('goalText');
+            if (userGoal.trim()) {
+                goalText.textContent = userGoal;
+                goalText.classList.remove('empty');
+            } else {
+                goalText.textContent = "Click 'Edit' to set your goal and motivation for losing belly fat...";
+                goalText.classList.add('empty');
+            }
+        }
         
         // Generate the exercise tracker
         function generateExerciseTracker() {
@@ -969,10 +1465,10 @@
             // Get days in current month
             const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
             
-            // Create table header
+            // Create table header with days of the month
             const headerRow = document.createElement('tr');
             
-            // Corner cell
+            // Corner cell (top-left)
             const cornerCell = document.createElement('th');
             cornerCell.textContent = 'Exercises';
             cornerCell.classList.add('corner-cell');
@@ -983,12 +1479,13 @@
                 const dayHeader = document.createElement('th');
                 dayHeader.classList.add('day-header');
                 
+                // Get day name
                 const dayOfWeek = new Date(currentYear, currentMonth, day).getDay();
                 const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
                 
                 dayHeader.innerHTML = `<div>${dayNames[dayOfWeek]}</div><div class="day-number">${day}</div>`;
                 
-                // Weekend styling
+                // Add weekend styling
                 if (dayOfWeek === 0 || dayOfWeek === 6) {
                     dayHeader.classList.add('weekend-header');
                 }
@@ -1003,12 +1500,17 @@
                 createExerciseRow(exercise, exerciseIndex, daysInMonth);
             });
             
-            // Add new exercise row
+            // Add the "add new exercise" row at the bottom
             addNewExerciseRow(daysInMonth);
             
-            // Update displays
+            // Update YouTube playlist display
             updatePlaylistDisplay();
+            
+            // Update captured images display
             updateImagesDisplay();
+            
+            // Update goal display
+            updateGoalDisplay();
         }
         
         // Create an exercise row
@@ -1016,12 +1518,12 @@
             const exerciseBody = document.getElementById('exerciseBody');
             const exerciseRow = document.createElement('tr');
             
-            // Exercise name cell
+            // Exercise name cell (editable)
             const exerciseNameCell = document.createElement('td');
             exerciseNameCell.classList.add('exercise-cell');
             
             const cellContainer = document.createElement('div');
-            cellContainer.classList.add('exercise-cell-container');
+            cellContainer.classList.add('habit-cell-container');
             
             const exerciseInput = document.createElement('input');
             exerciseInput.type = 'text';
@@ -1049,7 +1551,7 @@
                 }
             });
             
-            // Delete button
+            // Delete button - RED TEXT X on right edge
             const deleteBtn = document.createElement('button');
             deleteBtn.classList.add('delete-btn');
             deleteBtn.innerHTML = '×';
@@ -1098,7 +1600,7 @@
                 const dayCell = document.createElement('td');
                 const dayOfWeek = new Date(currentYear, currentMonth, day).getDay();
                 
-                // Weekend styling
+                // Add weekend styling
                 if (dayOfWeek === 0 || dayOfWeek === 6) {
                     dayCell.classList.add('weekend-cell');
                 }
@@ -1123,10 +1625,13 @@
                 // Add click events
                 cellDiv.addEventListener('click', function(e) {
                     if (e.shiftKey) {
+                        // Shift+click to mark as skipped
                         toggleExerciseStatus(this, 'skipped');
                     } else if (e.altKey) {
+                        // Alt+click to mark as partial
                         toggleExerciseStatus(this, 'partial');
                     } else {
+                        // Regular click to mark as completed
                         toggleExerciseStatus(this, 'completed');
                     }
                 });
@@ -1175,25 +1680,24 @@
             menu.style.left = x + 'px';
             menu.style.top = y + 'px';
             menu.style.background = 'white';
-            menu.style.border = '1px solid var(--border)';
-            menu.style.borderRadius = '4px';
-            menu.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+            menu.style.border = '1px solid #ddd';
+            menu.style.borderRadius = '6px';
+            menu.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
             menu.style.zIndex = '1000';
             menu.style.minWidth = '150px';
             
             const options = [
-                { text: 'Mark as Completed', action: 'completed' },
-                { text: 'Mark as Skipped', action: 'skipped' },
-                { text: 'Mark as Partial', action: 'partial' },
-                { text: 'Clear Status', action: 'clear' }
+                { text: '✅ Mark as Completed', action: 'completed' },
+                { text: '❌ Mark as Skipped', action: 'skipped' },
+                { text: '⚠️ Mark as Partial', action: 'partial' },
+                { text: '🗑️ Clear Status', action: 'clear' }
             ];
             
             options.forEach(option => {
                 const item = document.createElement('div');
-                item.style.padding = '10px 12px';
+                item.style.padding = '10px 15px';
                 item.style.cursor = 'pointer';
-                item.style.borderBottom = '1px solid var(--border)';
-                item.style.fontSize = '13px';
+                item.style.borderBottom = '1px solid #eee';
                 item.textContent = option.text;
                 
                 item.addEventListener('click', () => {
@@ -1212,7 +1716,7 @@
                 });
                 
                 item.addEventListener('mouseenter', () => {
-                    item.style.background = 'var(--light-gray)';
+                    item.style.background = '#f5f5f5';
                 });
                 
                 item.addEventListener('mouseleave', () => {
@@ -1240,17 +1744,18 @@
         function addNewExerciseRow(daysInMonth) {
             const exerciseBody = document.getElementById('exerciseBody');
             const addRow = document.createElement('tr');
+            addRow.classList.add('add-row');
             
             const exerciseNameCell = document.createElement('td');
             exerciseNameCell.classList.add('exercise-cell');
             
             const cellContainer = document.createElement('div');
-            cellContainer.classList.add('exercise-cell-container');
+            cellContainer.classList.add('habit-cell-container');
             
             const exerciseInput = document.createElement('input');
             exerciseInput.type = 'text';
             exerciseInput.classList.add('exercise-input');
-            exerciseInput.placeholder = 'Add exercise...';
+            exerciseInput.placeholder = 'Add new exercise...';
             
             exerciseInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter' && this.value.trim()) {
@@ -1317,14 +1822,14 @@
             const videoItem = {
                 id: videoId,
                 url: url,
-                title: `Workout ${youtubePlaylist.length + 1}`,
+                title: `Workout Video ${youtubePlaylist.length + 1}`,
                 added: new Date().toISOString()
             };
             
             youtubePlaylist.push(videoItem);
             updatePlaylistDisplay();
             savePlaylistData();
-            showNotification('Video added');
+            showNotification('Video added to playlist');
         }
         
         function updatePlaylistDisplay() {
@@ -1333,16 +1838,25 @@
             
             youtubePlaylist.forEach((video, index) => {
                 const item = document.createElement('div');
-                item.classList.add('playlist-item');
+                item.classList.add('yt-item');
                 if (index === currentVideoIndex) {
                     item.classList.add('active');
                 }
                 
                 item.innerHTML = `
-                    <div class="playlist-item-title">${video.title}</div>
-                    <div class="playlist-item-actions">
-                        <button class="icon-btn" data-index="${index}" title="Play">▶</button>
-                        <button class="icon-btn" data-index="${index}" title="Delete">×</button>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span>${index + 1}.</span>
+                        <span style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                            ${video.title}
+                        </span>
+                    </div>
+                    <div class="yt-item-actions">
+                        <button class="icon-btn" data-index="${index}" title="Play">
+                            ▶️
+                        </button>
+                        <button class="icon-btn" data-index="${index}" title="Delete">
+                            🗑️
+                        </button>
                     </div>
                 `;
                 
@@ -1350,14 +1864,14 @@
             });
             
             // Add event listeners
-            document.querySelectorAll('.playlist-item-actions button').forEach(btn => {
+            document.querySelectorAll('.yt-item-actions button').forEach(btn => {
                 const index = parseInt(btn.getAttribute('data-index'));
-                if (btn.textContent.includes('▶')) {
+                if (btn.textContent.includes('▶️')) {
                     btn.addEventListener('click', (e) => {
                         e.stopPropagation();
                         loadYouTubeVideo(index);
                     });
-                } else if (btn.textContent.includes('×')) {
+                } else if (btn.textContent.includes('🗑️')) {
                     btn.addEventListener('click', (e) => {
                         e.stopPropagation();
                         removeYouTubeVideo(index);
@@ -1366,7 +1880,7 @@
             });
             
             // Add click to select video
-            document.querySelectorAll('.playlist-item').forEach(item => {
+            document.querySelectorAll('.yt-item').forEach(item => {
                 item.addEventListener('click', function() {
                     const index = Array.from(this.parentNode.children).indexOf(this);
                     loadYouTubeVideo(index);
@@ -1386,6 +1900,9 @@
                 loadYouTubeVideo(currentVideoIndex);
             } else {
                 // Clear player if no videos
+                if (player) {
+                    player.stopVideo();
+                }
                 if (fullScreenPlayer) {
                     fullScreenPlayer.stopVideo();
                 }
@@ -1395,6 +1912,9 @@
         function loadYouTubeVideo(index) {
             if (index >= 0 && index < youtubePlaylist.length) {
                 currentVideoIndex = index;
+                if (player) {
+                    player.loadVideoById(youtubePlaylist[index].id);
+                }
                 if (fullScreenPlayer) {
                     fullScreenPlayer.loadVideoById(youtubePlaylist[index].id);
                 }
@@ -1404,12 +1924,28 @@
         
         // YouTube Player
         function onYouTubeIframeAPIReady() {
+            // Regular player (hidden initially)
+            player = new YT.Player('player', {
+                height: '200',
+                width: '100%',
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 1,
+                    'rel': 0,
+                    'showinfo': 0
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+            
             // Full screen player
             fullScreenPlayer = new YT.Player('fullScreenPlayer', {
                 height: '100%',
                 width: '100%',
                 playerVars: {
-                    'autoplay': 0,
+                    'autoplay': 1,
                     'controls': 1,
                     'rel': 0,
                     'showinfo': 0,
@@ -1422,18 +1958,40 @@
             });
         }
         
+        function onPlayerReady(event) {
+            if (youtubePlaylist.length > 0) {
+                event.target.loadVideoById(youtubePlaylist[0].id);
+            }
+        }
+        
         function onFullScreenPlayerReady(event) {
             if (youtubePlaylist.length > 0) {
                 event.target.loadVideoById(youtubePlaylist[currentVideoIndex].id);
             }
         }
         
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.ENDED) {
+                const loopToggle = document.getElementById('loopToggle').checked;
+                const autoPlayToggle = document.getElementById('autoPlayToggle').checked;
+                
+                if (loopToggle) {
+                    event.target.playVideo();
+                } else if (autoPlayToggle && currentVideoIndex < youtubePlaylist.length - 1) {
+                    loadYouTubeVideo(currentVideoIndex + 1);
+                }
+            }
+        }
+        
         function onFullScreenPlayerStateChange(event) {
             if (event.data === YT.PlayerState.ENDED) {
-                if (currentVideoIndex < youtubePlaylist.length - 1) {
+                const loopToggle = document.getElementById('loopToggle').checked;
+                const autoPlayToggle = document.getElementById('autoPlayToggle').checked;
+                
+                if (loopToggle) {
+                    event.target.playVideo();
+                } else if (autoPlayToggle && currentVideoIndex < youtubePlaylist.length - 1) {
                     loadYouTubeVideo(currentVideoIndex + 1);
-                } else {
-                    loadYouTubeVideo(0);
                 }
             }
         }
@@ -1442,7 +2000,7 @@
         async function startCamera() {
             try {
                 cameraStream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'user', width: 320, height: 240 }
+                    video: { facingMode: 'user', width: 640, height: 480 }
                 });
                 const cameraView = document.getElementById('cameraView');
                 cameraView.srcObject = cameraStream;
@@ -1469,20 +2027,29 @@
             
             const imageData = canvas.toDataURL('image/jpeg', 0.8);
             
+            const weightInput = document.getElementById('weightInput').value;
+            const weightUnit = document.getElementById('weightUnit').value;
+            
             const imageItem = {
                 data: imageData,
                 date: new Date().toISOString(),
+                type: currentPhotoType,
+                weight: weightInput ? parseFloat(weightInput) : null,
+                unit: weightUnit,
                 month: `${currentMonth}-${currentYear}`
             };
             
-            capturedImages.unshift(imageItem);
-            if (capturedImages.length > 9) {
-                capturedImages = capturedImages.slice(0, 9);
+            capturedImages.unshift(imageItem); // Add to beginning
+            if (capturedImages.length > 12) {
+                capturedImages = capturedImages.slice(0, 12); // Keep only 12 images
             }
+            
+            // Clear weight input
+            document.getElementById('weightInput').value = '';
             
             updateImagesDisplay();
             saveImagesData();
-            showNotification('Photo captured');
+            showNotification(`${currentPhotoType.charAt(0).toUpperCase() + currentPhotoType.slice(1)} photo captured`);
         }
         
         function updateImagesDisplay() {
@@ -1490,21 +2057,69 @@
             imagesContainer.innerHTML = '';
             
             capturedImages.forEach((image, index) => {
+                const container = document.createElement('div');
+                container.classList.add('captured-image-container');
+                container.setAttribute('data-index', index);
+                
                 const img = document.createElement('img');
                 img.src = image.data;
                 img.classList.add('captured-image');
-                img.setAttribute('data-index', index);
-                img.addEventListener('click', () => openImageModal(index));
-                imagesContainer.appendChild(img);
+                
+                // Create overlay with info
+                const overlay = document.createElement('div');
+                overlay.classList.add('image-overlay');
+                
+                const typeLabel = image.type.charAt(0).toUpperCase() + image.type.slice(1);
+                const date = new Date(image.date);
+                const dateStr = `${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`;
+                
+                let weightText = '';
+                if (image.weight !== null) {
+                    weightText = `<span class="image-weight">${image.weight}${image.unit}</span>`;
+                }
+                
+                overlay.innerHTML = `
+                    <div>${typeLabel}</div>
+                    <div>${dateStr} ${weightText}</div>
+                `;
+                
+                container.appendChild(img);
+                container.appendChild(overlay);
+                container.addEventListener('click', () => openImageModal(index));
+                
+                imagesContainer.appendChild(container);
             });
         }
         
         function openImageModal(index) {
             const modal = document.getElementById('imageModal');
             const modalImage = document.getElementById('modalImage');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalPhotoType = document.getElementById('modalPhotoType');
+            const modalDate = document.getElementById('modalDate');
+            const modalWeight = document.getElementById('modalWeight');
+            const progressStats = document.getElementById('progressStats');
             const deleteBtn = document.getElementById('deleteImageBtn');
             
-            modalImage.src = capturedImages[index].data;
+            const image = capturedImages[index];
+            modalImage.src = image.data;
+            
+            const date = new Date(image.date);
+            const dateStr = `${date.toLocaleDateString('en-US', { weekday: 'long' })}, ${date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+            
+            const typeLabel = image.type.charAt(0).toUpperCase() + image.type.slice(1);
+            modalTitle.textContent = `${typeLabel} Progress Photo`;
+            modalPhotoType.textContent = `${typeLabel} Photo`;
+            modalDate.textContent = dateStr;
+            
+            if (image.weight !== null) {
+                modalWeight.textContent = `${image.weight} ${image.unit}`;
+            } else {
+                modalWeight.textContent = 'Not recorded';
+            }
+            
+            // Calculate and display progress stats
+            updateProgressStats(progressStats, index);
             
             deleteBtn.onclick = () => {
                 capturedImages.splice(index, 1);
@@ -1517,18 +2132,141 @@
             modal.style.display = 'flex';
         }
         
+        function updateProgressStats(container, currentIndex) {
+            const currentImage = capturedImages[currentIndex];
+            container.innerHTML = '';
+            
+            // Get all images of the same type
+            const sameTypeImages = capturedImages.filter(img => img.type === currentImage.type);
+            
+            if (sameTypeImages.length > 1) {
+                // Find oldest and newest of this type
+                sameTypeImages.sort((a, b) => new Date(a.date) - new Date(b.date));
+                const oldest = sameTypeImages[0];
+                const newest = sameTypeImages[sameTypeImages.length - 1];
+                
+                if (oldest.weight !== null && newest.weight !== null) {
+                    const weightDiff = newest.weight - oldest.weight;
+                    const diffText = weightDiff > 0 ? `+${weightDiff}` : weightDiff;
+                    const diffColor = weightDiff < 0 ? 'green' : weightDiff > 0 ? 'red' : 'gray';
+                    
+                    container.innerHTML = `
+                        <div class="stat-item">
+                            <div class="stat-label">Starting Weight</div>
+                            <div class="stat-value">${oldest.weight} ${oldest.unit}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Current Weight</div>
+                            <div class="stat-value">${newest.weight} ${newest.unit}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Weight Change</div>
+                            <div class="stat-value" style="color: ${diffColor}">${diffText} ${newest.unit}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Time Period</div>
+                            <div class="stat-value">${calculateTimePeriod(oldest.date, newest.date)}</div>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div class="stat-item">
+                            <div class="stat-label">Photos Taken</div>
+                            <div class="stat-value">${sameTypeImages.length} ${currentImage.type} photos</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">First Photo</div>
+                            <div class="stat-value">${new Date(oldest.date).toLocaleDateString()}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Latest Photo</div>
+                            <div class="stat-value">${new Date(newest.date).toLocaleDateString()}</div>
+                        </div>
+                    `;
+                }
+            } else {
+                container.innerHTML = `
+                    <div class="stat-item">
+                        <div class="stat-label">Photo Type</div>
+                        <div class="stat-value">${currentImage.type.charAt(0).toUpperCase() + currentImage.type.slice(1)}</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Date Taken</div>
+                        <div class="stat-value">${new Date(currentImage.date).toLocaleDateString()}</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Total Photos</div>
+                        <div class="stat-value">${capturedImages.length} photos total</div>
+                    </div>
+                `;
+            }
+        }
+        
+        function calculateTimePeriod(startDate, endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays < 30) {
+                return `${diffDays} days`;
+            } else if (diffDays < 365) {
+                const months = Math.floor(diffDays / 30);
+                return `${months} month${months !== 1 ? 's' : ''}`;
+            } else {
+                const years = Math.floor(diffDays / 365);
+                const remainingMonths = Math.floor((diffDays % 365) / 30);
+                let result = `${years} year${years !== 1 ? 's' : ''}`;
+                if (remainingMonths > 0) {
+                    result += `, ${remainingMonths} month${remainingMonths !== 1 ? 's' : ''}`;
+                }
+                return result;
+            }
+        }
+        
+        // Goal Functions
+        function editGoal() {
+            document.getElementById('goalText').style.display = 'none';
+            document.getElementById('goalInputContainer').style.display = 'block';
+            document.getElementById('goalInput').value = userGoal;
+            document.getElementById('goalInput').focus();
+        }
+        
+        function saveGoal() {
+            const newGoal = document.getElementById('goalInput').value.trim();
+            userGoal = newGoal;
+            localStorage.setItem('userGoal', userGoal);
+            
+            document.getElementById('goalInputContainer').style.display = 'none';
+            document.getElementById('goalText').style.display = 'block';
+            updateGoalDisplay();
+            showNotification('Goal saved');
+        }
+        
+        function cancelGoalEdit() {
+            document.getElementById('goalInputContainer').style.display = 'none';
+            document.getElementById('goalText').style.display = 'block';
+        }
+        
         // Video Control Functions
         function startWorkoutVideos() {
             if (youtubePlaylist.length === 0) {
-                showNotification('Add videos first');
+                showNotification('Add videos to playlist first');
                 return;
             }
             
-            // Show video overlay
+            // Show video overlay in full screen
             document.getElementById('videoOverlay').classList.add('active');
             
-            // Load the current video
+            // Load the first video
             loadYouTubeVideo(currentVideoIndex);
+            
+            // Play the video
+            setTimeout(() => {
+                if (fullScreenPlayer) {
+                    fullScreenPlayer.playVideo();
+                }
+            }, 1000);
         }
         
         function stopAndHideVideos() {
@@ -1540,6 +2278,7 @@
             // Hide video overlay
             document.getElementById('videoOverlay').classList.remove('active');
             
+            // Show notification
             showNotification('Workout stopped');
         }
         
@@ -1622,11 +2361,51 @@
             }
         });
         
+        // Goal section event listeners
+        document.getElementById('editGoalBtn').addEventListener('click', editGoal);
+        document.getElementById('saveGoalBtn').addEventListener('click', saveGoal);
+        document.getElementById('cancelGoalBtn').addEventListener('click', cancelGoalEdit);
+        
+        // Photo type buttons
+        document.querySelectorAll('.photo-type-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.photo-type-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                // Add active class to clicked button
+                this.classList.add('active');
+                // Update current photo type
+                currentPhotoType = this.getAttribute('data-type');
+            });
+        });
+        
         document.getElementById('startCameraBtn').addEventListener('click', startCamera);
         document.getElementById('captureBtn').addEventListener('click', captureImage);
         
         // Start Video Button
         document.getElementById('startVideoBtn').addEventListener('click', startWorkoutVideos);
+        
+        // Regular player controls
+        document.getElementById('playBtn').addEventListener('click', function() {
+            if (player) {
+                player.playVideo();
+            }
+        });
+        
+        document.getElementById('pauseBtn').addEventListener('click', function() {
+            if (player) {
+                player.pauseVideo();
+            }
+        });
+        
+        document.getElementById('nextBtn').addEventListener('click', function() {
+            if (currentVideoIndex < youtubePlaylist.length - 1) {
+                loadYouTubeVideo(currentVideoIndex + 1);
+            } else {
+                loadYouTubeVideo(0);
+            }
+        });
         
         // Full screen player controls
         document.getElementById('fsPlayBtn').addEventListener('click', function() {
@@ -1660,7 +2439,7 @@
             localStorage.setItem('exerciseTitle', this.value);
         });
         
-        // Close modals when clicking outside
+        // Close modal when clicking outside
         window.addEventListener('click', function(event) {
             const modal = document.getElementById('imageModal');
             if (event.target === modal) {
@@ -1683,19 +2462,74 @@
             generateExerciseTracker();
         }
         
+        // Auto-focus title if empty
+        if (!savedTitle) {
+            setTimeout(() => {
+                document.getElementById('pageTitle').focus();
+            }, 300);
+        }
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            // Update layout if needed
+        });
+        
         // Add sample YouTube videos if playlist is empty
         if (youtubePlaylist.length === 0) {
+            const sampleVideos = [
+                'https://www.youtube.com/watch?v=ml6cT4AZdqI', // 10 min abs workout
+                'https://www.youtube.com/watch?v=AnYl6Nk9GOA', // 15 min HIIT
+                'https://www.youtube.com/watch?v=4pKly2JojMw'  // 20 min belly fat
+            ];
+            
             setTimeout(() => {
-                const sampleVideos = [
-                    'https://www.youtube.com/watch?v=ml6cT4AZdqI',
-                    'https://www.youtube.com/watch?v=AnYl6Nk9GOA',
-                    'https://www.youtube.com/watch?v=4pKly2JojMw'
-                ];
-                
                 sampleVideos.forEach(video => {
                     addYouTubeVideo(video);
                 });
+                showNotification('Sample workout videos added');
             }, 1000);
+        }
+        
+        // Add sample weight and progress data if no images exist
+        if (capturedImages.length === 0) {
+            // Add sample before photo
+            const sampleBeforeDate = new Date();
+            sampleBeforeDate.setDate(sampleBeforeDate.getDate() - 30);
+            
+            capturedImages.push({
+                data: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop',
+                date: sampleBeforeDate.toISOString(),
+                type: 'before',
+                weight: 185,
+                unit: 'lbs',
+                month: `${currentMonth}-${currentYear}`
+            });
+            
+            // Add sample progress photo
+            const sampleProgressDate = new Date();
+            sampleProgressDate.setDate(sampleProgressDate.getDate() - 15);
+            
+            capturedImages.push({
+                data: 'https://images.unsplash.com/photo-1594381898411-846e7d193883?w=400&h=300&fit=crop',
+                date: sampleProgressDate.toISOString(),
+                type: 'progress',
+                weight: 178,
+                unit: 'lbs',
+                month: `${currentMonth}-${currentYear}`
+            });
+            
+            // Add sample after photo
+            capturedImages.push({
+                data: 'https://images.unsplash.com/photo-1534367507877-0edd93bd013b?w=400&h=300&fit=crop',
+                date: new Date().toISOString(),
+                type: 'after',
+                weight: 172,
+                unit: 'lbs',
+                month: `${currentMonth}-${currentYear}`
+            });
+            
+            saveImagesData();
+            updateImagesDisplay();
         }
     </script>
 </body>
