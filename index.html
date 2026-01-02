@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belly Fat Burn Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #2E7D32;
+            --primary-light: #4CAF50;
+            --primary-dark: #1B5E20;
+            --light-gray: #f5f5f5;
+            --border: #e0e0e0;
+            --text: #333;
+            --text-light: #666;
+            --weekend: #f8f8f8;
+        }
+        
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text);
+        }
+        
+        body {
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header - Minimalist */
+        .header {
+            padding: 16px 24px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-shrink: 0;
+        }
+        
+        .title-container {
+            flex: 1;
+        }
+        
+        .title-input {
+            width: 100%;
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--text);
+            border: none;
+            background: transparent;
+            padding: 4px 0;
+            font-family: inherit;
+            letter-spacing: -0.3px;
+        }
+        
+        .title-input:focus {
+            outline: none;
+        }
+        
+        .title-input::placeholder {
+            color: var(--text-light);
+        }
+        
+        .controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            background: white;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .btn:hover {
+            background: var(--light-gray);
+            border-color: #ccc;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+        
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            background: white;
+        }
+        
+        /* Sidebar - Minimalist */
+        .sidebar {
+            width: 300px;
+            background: white;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .sidebar-section {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .sidebar-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .sidebar-title::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+        
+        /* YouTube Input */
+        .input-group {
+            margin-bottom: 16px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 13px;
+            transition: border-color 0.2s;
+            background: white;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        /* Playlist */
+        .playlist {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: white;
+        }
+        
+        .playlist-item {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .playlist-item:hover {
+            background: var(--light-gray);
+        }
+        
+        .playlist-item.active {
+            background: var(--light-gray);
+            border-left: 3px solid var(--primary);
+        }
+        
+        .playlist-item-title {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 13px;
+        }
+        
+        .playlist-item-actions {
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .playlist-item:hover .playlist-item-actions {
+            opacity: 1;
+        }
+        
+        .icon-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 3px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: var(--text-light);
+            transition: background 0.2s;
+        }
+        
+        .icon-btn:hover {
+            background: rgba(0,0,0,0.05);
+            color: var(--text);
+        }
+        
+        /* Start Video Button */
+        .start-video-container {
+            margin-top: 16px;
+        }
+        
+        .start-video-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+        
+        .start-video-btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Camera Section */
+        .camera-preview {
+            width: 100%;
+            height: 150px;
+            background: var(--light-gray);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            position: relative;
+            border: 1px solid var(--border);
+        }
+        
+        #cameraView {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .camera-controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .captured-images {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .captured-image {
+            width: 100%;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 3px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .captured-image:hover {
+            transform: scale(1.02);
+        }
+        
+        /* Main Tracker Area */
+        .tracker-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .tracker-header {
+            padding: 16px 24px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        
+        .month-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .month-btn {
+            padding: 6px 12px;
+            background: white;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        
+        .month-btn:hover {
+            background: var(--light-gray);
+            border-color: #ccc;
+        }
+        
+        #currentMonth {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text);
+            min-width: 140px;
+            text-align: center;
+        }
+        
+        .tracker-container {
+            flex: 1;
+            overflow: auto;
+            padding: 20px;
+            background: white;
+        }
+        
+        /* Table - Minimalist */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 13px;
+            background: white;
+        }
+        
+        th, td {
+            padding: 0;
+            text-align: center;
+            border: 1px solid var(--border);
+            height: 44px;
+            box-sizing: border-box;
+        }
+        
+        thead th {
+            position: sticky;
+            top: 0;
+            background: white;
+            font-weight: 500;
+            color: var(--text);
+            z-index: 10;
+            border-bottom: 2px solid var(--border);
+        }
+        
+        .exercise-cell {
+            position: sticky;
+            left: 0;
+            background: white;
+            font-weight: 400;
+            color: var(--text);
+            min-width: 180px;
+            text-align: left;
+            z-index: 9;
+            border-right: 2px solid var(--border);
+            padding: 0 12px;
+            background: white;
+        }
+        
+        .corner-cell {
+            position: sticky;
+            top: 0;
+            left: 0;
+            z-index: 11;
+            background: white;
+            font-weight: 500;
+            min-width: 180px;
+            border-right: 2px solid var(--border);
+            border-bottom: 2px solid var(--border);
+        }
+        
+        .day-header {
+            padding: 8px 4px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-width: 50px;
+        }
+        
+        .day-number {
+            font-size: 12px;
+            color: var(--text);
+            display: block;
+            margin-top: 2px;
+            font-weight: 400;
+        }
+        
+        /* Weekend styling */
+        .weekend-header {
+            background: var(--weekend);
+        }
+        
+        .weekend-cell {
+            background: var(--weekend);
+        }
+        
+        /* Exercise input */
+        .exercise-input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 13px;
+            padding: 12px 0;
+            color: var(--text);
+            outline: none;
+        }
+        
+        .exercise-input:focus {
+            color: var(--text);
+        }
+        
+        /* Cell styling */
+        .cell {
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+            position: relative;
+        }
+        
+        .cell:hover {
+            background-color: var(--light-gray);
+        }
+        
+        .cell.completed {
+            background-color: #E8F5E9;
+        }
+        
+        .cell.completed::after {
+            content: '✓';
+            color: var(--primary);
+            font-size: 18px;
+            font-weight: 400;
+            position: absolute;
+        }
+        
+        .cell.skipped {
+            background-color: #FFEBEE;
+        }
+        
+        .cell.skipped::after {
+            content: '✗';
+            color: #f44336;
+            font-size: 18px;
+            font-weight: 400;
+            position: absolute;
+        }
+        
+        .cell.partial {
+            background-color: #FFF3E0;
+        }
+        
+        .cell.partial::after {
+            content: '~';
+            color: #FF9800;
+            font-size: 18px;
+            font-weight: 400;
+            position: absolute;
+        }
+        
+        /* Delete button */
+        .delete-btn {
+            background: transparent;
+            color: #ccc;
+            border: none;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.2s;
+            margin-left: 8px;
+        }
+        
+        .exercise-cell:hover .delete-btn {
+            opacity: 1;
+            color: var(--text-light);
+        }
+        
+        .delete-btn:hover {
+            color: #f44336;
+        }
+        
+        .exercise-cell-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+        
+        /* Video Overlay - Minimalist */
+        .video-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 2000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .video-overlay.active {
+            display: flex;
+        }
+        
+        .video-container {
+            width: 90%;
+            height: 80%;
+            position: relative;
+        }
+        
+        #fullScreenPlayer {
+            width: 100%;
+            height: 100%;
+            border: 1px solid var(--border);
+        }
+        
+        .video-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .video-control-btn {
+            padding: 10px 20px;
+            background: white;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        
+        .video-control-btn:hover {
+            background: var(--light-gray);
+            border-color: #ccc;
+        }
+        
+        .video-control-btn.primary {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .video-control-btn.primary:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+        
+        .close-video {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text);
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .close-video:hover {
+            background: var(--light-gray);
+            border-color: #ccc;
+        }
+        
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background: var(--text);
+            color: white;
+            border-radius: 4px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 1000;
+            font-size: 13px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+        }
+        
+        .modal-header {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-light);
+            padding: 4px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 280px;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 400px;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+            
+            .sidebar-content {
+                display: flex;
+                gap: 24px;
+                padding: 20px;
+            }
+            
+            .playlist-manager, .camera-section {
+                flex: 1;
+                margin: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-wrap: wrap;
+                padding: 12px 16px;
+                gap: 12px;
+            }
+            
+            .controls {
+                order: 3;
+                width: 100%;
+                margin-top: 8px;
+            }
+            
+            .tracker-header {
+                flex-direction: column;
+                gap: 12px;
+                padding: 12px 16px;
+            }
+            
+            .sidebar-content {
+                flex-direction: column;
+            }
+            
+            .video-container {
+                width: 95%;
+                height: 70%;
+            }
+            
+            .video-controls {
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 10px;
+                width: 90%;
+            }
+            
+            .exercise-cell, .corner-cell {
+                min-width: 160px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="title-container">
+                <input type="text" class="title-input" id="pageTitle" value="Exercise Tracker" maxlength="40">
+            </div>
+            <div class="controls">
+                <button class="btn" id="clearMonthBtn">
+                    Clear Month
+                </button>
+                <button class="btn" id="addWorkoutBtn">
+                    Add Exercise
+                </button>
+                <button class="btn btn-primary" id="printBtn">
+                    Print
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-title">Workout Videos</div>
+                    <div class="input-group">
+                        <input type="text" id="ytUrlInput" placeholder="YouTube video URL">
+                    </div>
+                    <button class="btn btn-primary" id="addYtBtn" style="width: 100%; margin-bottom: 16px;">
+                        Add to Playlist
+                    </button>
+                    <div class="playlist" id="ytPlaylist">
+                        <!-- Playlist items will be added here -->
+                    </div>
+                    <div class="start-video-container">
+                        <button class="start-video-btn" id="startVideoBtn">
+                            Start Workout
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="sidebar-title">Progress Photos</div>
+                    <div class="camera-preview">
+                        <video id="cameraView" autoplay></video>
+                    </div>
+                    <div class="camera-controls">
+                        <button class="btn" id="startCameraBtn">
+                            Start Camera
+                        </button>
+                        <button class="btn btn-primary" id="captureBtn">
+                            Capture
+                        </button>
+                    </div>
+                    <div class="captured-images" id="capturedImages">
+                        <!-- Captured images will appear here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Tracker Area -->
+            <div class="tracker-area">
+                <div class="tracker-header">
+                    <div class="month-selector">
+                        <button class="month-btn" id="prevMonth">←</button>
+                        <div id="currentMonth">January 2023</div>
+                        <button class="month-btn" id="nextMonth">→</button>
+                    </div>
+                    <div style="color: var(--text-light); font-size: 13px;">
+                        Click cells to mark completion
+                    </div>
+                </div>
+                
+                <div class="tracker-container">
+                    <table id="exerciseTable">
+                        <thead id="monthHeader">
+                            <!-- Days of the month will be generated by JavaScript -->
+                        </thead>
+                        <tbody id="exerciseBody">
+                            <!-- Exercise rows will be generated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Video Overlay -->
+    <div class="video-overlay" id="videoOverlay">
+        <button class="close-video" id="closeVideoBtn">×</button>
+        <div class="video-container">
+            <div id="fullScreenPlayer"></div>
+        </div>
+        <div class="video-controls">
+            <button class="video-control-btn" id="fsPlayBtn">
+                Play
+            </button>
+            <button class="video-control-btn" id="fsPauseBtn">
+                Pause
+            </button>
+            <button class="video-control-btn" id="fsNextBtn">
+                Next
+            </button>
+            <button class="video-control-btn primary" id="stopVideoBtn">
+                Stop
+            </button>
+        </div>
+    </div>
+    
+    <!-- Modal for Image View -->
+    <div class="modal" id="imageModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Progress Photo</span>
+                <button class="close-modal" id="closeModal">×</button>
+            </div>
+            <img id="modalImage" src="" style="width: 100%; border-radius: 4px; border: 1px solid var(--border);">
+            <div style="margin-top: 16px; text-align: center;">
+                <button class="btn" id="deleteImageBtn" style="width: 100%;">Delete Photo</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <!-- YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    
+    <script>
+        // Initialize current date
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+        
+        // Exercise data
+        let exercises = [
+            "Plank (60 sec)",
+            "Mountain Climbers (30)",
+            "Russian Twists (20)",
+            "Leg Raises (15)",
+            "Bicycle Crunches (30)",
+            "Side Plank (30 sec)",
+            "Burpees (10)",
+            "Jumping Jacks (50)"
+        ];
+        
+        // YouTube playlist data
+        let youtubePlaylist = [];
+        let currentVideoIndex = 0;
+        let player;
+        let fullScreenPlayer;
+        
+        // Camera and images
+        let cameraStream = null;
+        let capturedImages = [];
+        
+        // Load saved data
+        let exerciseData = JSON.parse(localStorage.getItem('exerciseData')) || {};
+        let savedTitle = localStorage.getItem('exerciseTitle') || "Exercise Tracker";
+        let savedPlaylist = JSON.parse(localStorage.getItem('youtubePlaylist')) || [];
+        let savedImages = JSON.parse(localStorage.getItem('progressImages')) || [];
+        
+        // Initialize
+        document.getElementById('pageTitle').value = savedTitle;
+        youtubePlaylist = savedPlaylist;
+        capturedImages = savedImages;
+        
+        // Generate the exercise tracker
+        function generateExerciseTracker() {
+            const monthHeader = document.getElementById('monthHeader');
+            const exerciseBody = document.getElementById('exerciseBody');
+            
+            // Clear previous content
+            monthHeader.innerHTML = '';
+            exerciseBody.innerHTML = '';
+            
+            // Update month display
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                                "July", "August", "September", "October", "November", "December"];
+            document.getElementById('currentMonth').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            
+            // Get days in current month
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            // Create table header
+            const headerRow = document.createElement('tr');
+            
+            // Corner cell
+            const cornerCell = document.createElement('th');
+            cornerCell.textContent = 'Exercises';
+            cornerCell.classList.add('corner-cell');
+            headerRow.appendChild(cornerCell);
+            
+            // Create day headers
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayHeader = document.createElement('th');
+                dayHeader.classList.add('day-header');
+                
+                const dayOfWeek = new Date(currentYear, currentMonth, day).getDay();
+                const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+                
+                dayHeader.innerHTML = `<div>${dayNames[dayOfWeek]}</div><div class="day-number">${day}</div>`;
+                
+                // Weekend styling
+                if (dayOfWeek === 0 || dayOfWeek === 6) {
+                    dayHeader.classList.add('weekend-header');
+                }
+                
+                headerRow.appendChild(dayHeader);
+            }
+            
+            monthHeader.appendChild(headerRow);
+            
+            // Create exercise rows
+            exercises.forEach((exercise, exerciseIndex) => {
+                createExerciseRow(exercise, exerciseIndex, daysInMonth);
+            });
+            
+            // Add new exercise row
+            addNewExerciseRow(daysInMonth);
+            
+            // Update displays
+            updatePlaylistDisplay();
+            updateImagesDisplay();
+        }
+        
+        // Create an exercise row
+        function createExerciseRow(exerciseName, exerciseIndex, daysInMonth) {
+            const exerciseBody = document.getElementById('exerciseBody');
+            const exerciseRow = document.createElement('tr');
+            
+            // Exercise name cell
+            const exerciseNameCell = document.createElement('td');
+            exerciseNameCell.classList.add('exercise-cell');
+            
+            const cellContainer = document.createElement('div');
+            cellContainer.classList.add('exercise-cell-container');
+            
+            const exerciseInput = document.createElement('input');
+            exerciseInput.type = 'text';
+            exerciseInput.classList.add('exercise-input');
+            exerciseInput.value = exerciseName;
+            exerciseInput.setAttribute('data-exercise-index', exerciseIndex);
+            exerciseInput.setAttribute('maxlength', '40');
+            
+            exerciseInput.addEventListener('blur', function() {
+                const index = parseInt(this.getAttribute('data-exercise-index'));
+                const newName = this.value.trim();
+                
+                if (newName && newName !== exercises[index]) {
+                    exercises[index] = newName;
+                    saveExerciseData();
+                    showNotification('Exercise updated');
+                } else if (!newName) {
+                    this.value = exercises[index];
+                }
+            });
+            
+            exerciseInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    this.blur();
+                }
+            });
+            
+            // Delete button
+            const deleteBtn = document.createElement('button');
+            deleteBtn.classList.add('delete-btn');
+            deleteBtn.innerHTML = '×';
+            deleteBtn.setAttribute('data-exercise-index', exerciseIndex);
+            deleteBtn.setAttribute('title', 'Delete exercise');
+            
+            deleteBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const index = parseInt(this.getAttribute('data-exercise-index'));
+                const exerciseName = exercises[index];
+                
+                if (confirm(`Delete "${exerciseName}"?`)) {
+                    exercises.splice(index, 1);
+                    
+                    // Remove all data for this exercise
+                    const monthKey = `${currentYear}-${currentMonth}`;
+                    Object.keys(exerciseData).forEach(key => {
+                        if (key.startsWith(`${monthKey}-${index}`)) {
+                            delete exerciseData[key];
+                        }
+                        // Update indices for exercises after the deleted one
+                        else if (key.startsWith(`${monthKey}-`)) {
+                            const parts = key.split('-');
+                            const exerciseIdx = parseInt(parts[2]);
+                            if (exerciseIdx > index) {
+                                const newKey = `${parts[0]}-${parts[1]}-${exerciseIdx-1}-${parts[3]}`;
+                                exerciseData[newKey] = exerciseData[key];
+                                delete exerciseData[key];
+                            }
+                        }
+                    });
+                    
+                    saveExerciseData();
+                    generateExerciseTracker();
+                    showNotification('Exercise deleted');
+                }
+            });
+            
+            cellContainer.appendChild(exerciseInput);
+            cellContainer.appendChild(deleteBtn);
+            exerciseNameCell.appendChild(cellContainer);
+            exerciseRow.appendChild(exerciseNameCell);
+            
+            // Create cells for each day
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('td');
+                const dayOfWeek = new Date(currentYear, currentMonth, day).getDay();
+                
+                // Weekend styling
+                if (dayOfWeek === 0 || dayOfWeek === 6) {
+                    dayCell.classList.add('weekend-cell');
+                }
+                
+                const cellDiv = document.createElement('div');
+                cellDiv.classList.add('cell');
+                cellDiv.setAttribute('data-exercise-index', exerciseIndex);
+                cellDiv.setAttribute('data-day', day);
+                
+                // Create unique key for this exercise/day/month/year
+                const key = `${currentYear}-${currentMonth}-${exerciseIndex}-${day}`;
+                
+                // Check exercise status
+                if (exerciseData[key] === 'completed') {
+                    cellDiv.classList.add('completed');
+                } else if (exerciseData[key] === 'skipped') {
+                    cellDiv.classList.add('skipped');
+                } else if (exerciseData[key] === 'partial') {
+                    cellDiv.classList.add('partial');
+                }
+                
+                // Add click events
+                cellDiv.addEventListener('click', function(e) {
+                    if (e.shiftKey) {
+                        toggleExerciseStatus(this, 'skipped');
+                    } else if (e.altKey) {
+                        toggleExerciseStatus(this, 'partial');
+                    } else {
+                        toggleExerciseStatus(this, 'completed');
+                    }
+                });
+                
+                // Add context menu for additional options
+                cellDiv.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    showCellContextMenu(this, e.clientX, e.clientY);
+                });
+                
+                dayCell.appendChild(cellDiv);
+                exerciseRow.appendChild(dayCell);
+            }
+            
+            exerciseBody.appendChild(exerciseRow);
+        }
+        
+        function toggleExerciseStatus(cell, status) {
+            const exerciseIdx = parseInt(cell.getAttribute('data-exercise-index'));
+            const dayNum = parseInt(cell.getAttribute('data-day'));
+            const cellKey = `${currentYear}-${currentMonth}-${exerciseIdx}-${dayNum}`;
+            
+            // Remove all status classes
+            cell.classList.remove('completed', 'skipped', 'partial');
+            
+            if (cellDataExists(cellKey) && exerciseData[cellKey] === status) {
+                // If clicking the same status, remove it
+                delete exerciseData[cellKey];
+            } else {
+                // Set new status
+                cell.classList.add(status);
+                exerciseData[cellKey] = status;
+            }
+            
+            saveExerciseData();
+        }
+        
+        function cellDataExists(key) {
+            return exerciseData[key] !== undefined;
+        }
+        
+        function showCellContextMenu(cell, x, y) {
+            // Create context menu
+            const menu = document.createElement('div');
+            menu.style.position = 'fixed';
+            menu.style.left = x + 'px';
+            menu.style.top = y + 'px';
+            menu.style.background = 'white';
+            menu.style.border = '1px solid var(--border)';
+            menu.style.borderRadius = '4px';
+            menu.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+            menu.style.zIndex = '1000';
+            menu.style.minWidth = '150px';
+            
+            const options = [
+                { text: 'Mark as Completed', action: 'completed' },
+                { text: 'Mark as Skipped', action: 'skipped' },
+                { text: 'Mark as Partial', action: 'partial' },
+                { text: 'Clear Status', action: 'clear' }
+            ];
+            
+            options.forEach(option => {
+                const item = document.createElement('div');
+                item.style.padding = '10px 12px';
+                item.style.cursor = 'pointer';
+                item.style.borderBottom = '1px solid var(--border)';
+                item.style.fontSize = '13px';
+                item.textContent = option.text;
+                
+                item.addEventListener('click', () => {
+                    if (option.action === 'clear') {
+                        const exerciseIdx = parseInt(cell.getAttribute('data-exercise-index'));
+                        const dayNum = parseInt(cell.getAttribute('data-day'));
+                        const cellKey = `${currentYear}-${currentMonth}-${exerciseIdx}-${dayNum}`;
+                        
+                        cell.classList.remove('completed', 'skipped', 'partial');
+                        delete exerciseData[cellKey];
+                        saveExerciseData();
+                    } else {
+                        toggleExerciseStatus(cell, option.action);
+                    }
+                    document.body.removeChild(menu);
+                });
+                
+                item.addEventListener('mouseenter', () => {
+                    item.style.background = 'var(--light-gray)';
+                });
+                
+                item.addEventListener('mouseleave', () => {
+                    item.style.background = 'white';
+                });
+                
+                menu.appendChild(item);
+            });
+            
+            document.body.appendChild(menu);
+            
+            // Close menu when clicking elsewhere
+            setTimeout(() => {
+                const closeMenu = (e) => {
+                    if (!menu.contains(e.target)) {
+                        document.body.removeChild(menu);
+                        document.removeEventListener('click', closeMenu);
+                    }
+                };
+                document.addEventListener('click', closeMenu);
+            }, 100);
+        }
+        
+        // Add new exercise row
+        function addNewExerciseRow(daysInMonth) {
+            const exerciseBody = document.getElementById('exerciseBody');
+            const addRow = document.createElement('tr');
+            
+            const exerciseNameCell = document.createElement('td');
+            exerciseNameCell.classList.add('exercise-cell');
+            
+            const cellContainer = document.createElement('div');
+            cellContainer.classList.add('exercise-cell-container');
+            
+            const exerciseInput = document.createElement('input');
+            exerciseInput.type = 'text';
+            exerciseInput.classList.add('exercise-input');
+            exerciseInput.placeholder = 'Add exercise...';
+            
+            exerciseInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && this.value.trim()) {
+                    const newExercise = this.value.trim();
+                    exercises.push(newExercise);
+                    
+                    saveExerciseData();
+                    generateExerciseTracker();
+                    showNotification('Exercise added');
+                    
+                    setTimeout(() => {
+                        const newInput = document.querySelector(`input[data-exercise-index="${exercises.length - 1}"]`);
+                        if (newInput) {
+                            newInput.focus();
+                            newInput.select();
+                        }
+                    }, 100);
+                }
+            });
+            
+            cellContainer.appendChild(exerciseInput);
+            exerciseNameCell.appendChild(cellContainer);
+            addRow.appendChild(exerciseNameCell);
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('td');
+                const dayOfWeek = new Date(currentYear, currentMonth, day).getDay();
+                
+                if (dayOfWeek === 0 || dayOfWeek === 6) {
+                    dayCell.classList.add('weekend-cell');
+                }
+                
+                const placeholder = document.createElement('div');
+                placeholder.classList.add('cell');
+                placeholder.style.opacity = '0.3';
+                
+                const placeholderText = document.createElement('span');
+                placeholderText.textContent = '+';
+                placeholderText.style.color = '#ccc';
+                placeholderText.style.fontSize = '12px';
+                
+                placeholder.appendChild(placeholderText);
+                dayCell.appendChild(placeholder);
+                addRow.appendChild(dayCell);
+            }
+            
+            exerciseBody.appendChild(addRow);
+        }
+        
+        // YouTube Playlist Functions
+        function extractVideoId(url) {
+            const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[7].length === 11) ? match[7] : null;
+        }
+        
+        function addYouTubeVideo(url) {
+            const videoId = extractVideoId(url);
+            if (!videoId) {
+                showNotification('Invalid YouTube URL');
+                return;
+            }
+            
+            const videoItem = {
+                id: videoId,
+                url: url,
+                title: `Workout ${youtubePlaylist.length + 1}`,
+                added: new Date().toISOString()
+            };
+            
+            youtubePlaylist.push(videoItem);
+            updatePlaylistDisplay();
+            savePlaylistData();
+            showNotification('Video added');
+        }
+        
+        function updatePlaylistDisplay() {
+            const playlistEl = document.getElementById('ytPlaylist');
+            playlistEl.innerHTML = '';
+            
+            youtubePlaylist.forEach((video, index) => {
+                const item = document.createElement('div');
+                item.classList.add('playlist-item');
+                if (index === currentVideoIndex) {
+                    item.classList.add('active');
+                }
+                
+                item.innerHTML = `
+                    <div class="playlist-item-title">${video.title}</div>
+                    <div class="playlist-item-actions">
+                        <button class="icon-btn" data-index="${index}" title="Play">▶</button>
+                        <button class="icon-btn" data-index="${index}" title="Delete">×</button>
+                    </div>
+                `;
+                
+                playlistEl.appendChild(item);
+            });
+            
+            // Add event listeners
+            document.querySelectorAll('.playlist-item-actions button').forEach(btn => {
+                const index = parseInt(btn.getAttribute('data-index'));
+                if (btn.textContent.includes('▶')) {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        loadYouTubeVideo(index);
+                    });
+                } else if (btn.textContent.includes('×')) {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        removeYouTubeVideo(index);
+                    });
+                }
+            });
+            
+            // Add click to select video
+            document.querySelectorAll('.playlist-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const index = Array.from(this.parentNode.children).indexOf(this);
+                    loadYouTubeVideo(index);
+                });
+            });
+        }
+        
+        function removeYouTubeVideo(index) {
+            youtubePlaylist.splice(index, 1);
+            if (currentVideoIndex >= index) {
+                currentVideoIndex = Math.max(0, currentVideoIndex - 1);
+            }
+            updatePlaylistDisplay();
+            savePlaylistData();
+            
+            if (youtubePlaylist.length > 0) {
+                loadYouTubeVideo(currentVideoIndex);
+            } else {
+                // Clear player if no videos
+                if (fullScreenPlayer) {
+                    fullScreenPlayer.stopVideo();
+                }
+            }
+        }
+        
+        function loadYouTubeVideo(index) {
+            if (index >= 0 && index < youtubePlaylist.length) {
+                currentVideoIndex = index;
+                if (fullScreenPlayer) {
+                    fullScreenPlayer.loadVideoById(youtubePlaylist[index].id);
+                }
+                updatePlaylistDisplay();
+            }
+        }
+        
+        // YouTube Player
+        function onYouTubeIframeAPIReady() {
+            // Full screen player
+            fullScreenPlayer = new YT.Player('fullScreenPlayer', {
+                height: '100%',
+                width: '100%',
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 1,
+                    'rel': 0,
+                    'showinfo': 0,
+                    'modestbranding': 1
+                },
+                events: {
+                    'onReady': onFullScreenPlayerReady,
+                    'onStateChange': onFullScreenPlayerStateChange
+                }
+            });
+        }
+        
+        function onFullScreenPlayerReady(event) {
+            if (youtubePlaylist.length > 0) {
+                event.target.loadVideoById(youtubePlaylist[currentVideoIndex].id);
+            }
+        }
+        
+        function onFullScreenPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.ENDED) {
+                if (currentVideoIndex < youtubePlaylist.length - 1) {
+                    loadYouTubeVideo(currentVideoIndex + 1);
+                } else {
+                    loadYouTubeVideo(0);
+                }
+            }
+        }
+        
+        // Camera Functions
+        async function startCamera() {
+            try {
+                cameraStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'user', width: 320, height: 240 }
+                });
+                const cameraView = document.getElementById('cameraView');
+                cameraView.srcObject = cameraStream;
+                showNotification('Camera started');
+            } catch (err) {
+                console.error('Camera error:', err);
+                showNotification('Camera access denied');
+            }
+        }
+        
+        function captureImage() {
+            if (!cameraStream) {
+                showNotification('Start camera first');
+                return;
+            }
+            
+            const cameraView = document.getElementById('cameraView');
+            const canvas = document.createElement('canvas');
+            canvas.width = cameraView.videoWidth;
+            canvas.height = cameraView.videoHeight;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(cameraView, 0, 0, canvas.width, canvas.height);
+            
+            const imageData = canvas.toDataURL('image/jpeg', 0.8);
+            
+            const imageItem = {
+                data: imageData,
+                date: new Date().toISOString(),
+                month: `${currentMonth}-${currentYear}`
+            };
+            
+            capturedImages.unshift(imageItem);
+            if (capturedImages.length > 9) {
+                capturedImages = capturedImages.slice(0, 9);
+            }
+            
+            updateImagesDisplay();
+            saveImagesData();
+            showNotification('Photo captured');
+        }
+        
+        function updateImagesDisplay() {
+            const imagesContainer = document.getElementById('capturedImages');
+            imagesContainer.innerHTML = '';
+            
+            capturedImages.forEach((image, index) => {
+                const img = document.createElement('img');
+                img.src = image.data;
+                img.classList.add('captured-image');
+                img.setAttribute('data-index', index);
+                img.addEventListener('click', () => openImageModal(index));
+                imagesContainer.appendChild(img);
+            });
+        }
+        
+        function openImageModal(index) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            const deleteBtn = document.getElementById('deleteImageBtn');
+            
+            modalImage.src = capturedImages[index].data;
+            
+            deleteBtn.onclick = () => {
+                capturedImages.splice(index, 1);
+                saveImagesData();
+                updateImagesDisplay();
+                modal.style.display = 'none';
+                showNotification('Photo deleted');
+            };
+            
+            modal.style.display = 'flex';
+        }
+        
+        // Video Control Functions
+        function startWorkoutVideos() {
+            if (youtubePlaylist.length === 0) {
+                showNotification('Add videos first');
+                return;
+            }
+            
+            // Show video overlay
+            document.getElementById('videoOverlay').classList.add('active');
+            
+            // Load the current video
+            loadYouTubeVideo(currentVideoIndex);
+        }
+        
+        function stopAndHideVideos() {
+            // Stop video
+            if (fullScreenPlayer) {
+                fullScreenPlayer.stopVideo();
+            }
+            
+            // Hide video overlay
+            document.getElementById('videoOverlay').classList.remove('active');
+            
+            showNotification('Workout stopped');
+        }
+        
+        // Save functions
+        function saveExerciseData() {
+            localStorage.setItem('exerciseData', JSON.stringify(exerciseData));
+            localStorage.setItem('exerciseList', JSON.stringify(exercises));
+            localStorage.setItem('exerciseTitle', document.getElementById('pageTitle').value);
+        }
+        
+        function savePlaylistData() {
+            localStorage.setItem('youtubePlaylist', JSON.stringify(youtubePlaylist));
+        }
+        
+        function saveImagesData() {
+            localStorage.setItem('progressImages', JSON.stringify(capturedImages));
+        }
+        
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2000);
+        }
+        
+        // Event Listeners
+        document.getElementById('prevMonth').addEventListener('click', function() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateExerciseTracker();
+        });
+        
+        document.getElementById('nextMonth').addEventListener('click', function() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateExerciseTracker();
+        });
+        
+        document.getElementById('clearMonthBtn').addEventListener('click', function() {
+            if (confirm('Clear all exercise data for this month?')) {
+                const monthKey = `${currentYear}-${currentMonth}`;
+                Object.keys(exerciseData).forEach(key => {
+                    if (key.startsWith(monthKey)) {
+                        delete exerciseData[key];
+                    }
+                });
+                
+                saveExerciseData();
+                generateExerciseTracker();
+                showNotification('Month cleared');
+            }
+        });
+        
+        document.getElementById('addWorkoutBtn').addEventListener('click', function() {
+            const input = document.querySelector('.add-row .exercise-input');
+            if (input) {
+                input.focus();
+            }
+        });
+        
+        document.getElementById('printBtn').addEventListener('click', function() {
+            window.print();
+        });
+        
+        document.getElementById('addYtBtn').addEventListener('click', function() {
+            const urlInput = document.getElementById('ytUrlInput');
+            if (urlInput.value.trim()) {
+                addYouTubeVideo(urlInput.value.trim());
+                urlInput.value = '';
+            }
+        });
+        
+        document.getElementById('startCameraBtn').addEventListener('click', startCamera);
+        document.getElementById('captureBtn').addEventListener('click', captureImage);
+        
+        // Start Video Button
+        document.getElementById('startVideoBtn').addEventListener('click', startWorkoutVideos);
+        
+        // Full screen player controls
+        document.getElementById('fsPlayBtn').addEventListener('click', function() {
+            if (fullScreenPlayer) {
+                fullScreenPlayer.playVideo();
+            }
+        });
+        
+        document.getElementById('fsPauseBtn').addEventListener('click', function() {
+            if (fullScreenPlayer) {
+                fullScreenPlayer.pauseVideo();
+            }
+        });
+        
+        document.getElementById('fsNextBtn').addEventListener('click', function() {
+            if (currentVideoIndex < youtubePlaylist.length - 1) {
+                loadYouTubeVideo(currentVideoIndex + 1);
+            } else {
+                loadYouTubeVideo(0);
+            }
+        });
+        
+        document.getElementById('stopVideoBtn').addEventListener('click', stopAndHideVideos);
+        document.getElementById('closeVideoBtn').addEventListener('click', stopAndHideVideos);
+        
+        document.getElementById('closeModal').addEventListener('click', function() {
+            document.getElementById('imageModal').style.display = 'none';
+        });
+        
+        document.getElementById('pageTitle').addEventListener('input', function() {
+            localStorage.setItem('exerciseTitle', this.value);
+        });
+        
+        // Close modals when clicking outside
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('imageModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+            
+            const videoOverlay = document.getElementById('videoOverlay');
+            if (event.target === videoOverlay) {
+                stopAndHideVideos();
+            }
+        });
+        
+        // Initialize
+        generateExerciseTracker();
+        
+        // Load saved data
+        const savedExercises = JSON.parse(localStorage.getItem('exerciseList'));
+        if (savedExercises && savedExercises.length > 0) {
+            exercises = savedExercises;
+            generateExerciseTracker();
+        }
+        
+        // Add sample YouTube videos if playlist is empty
+        if (youtubePlaylist.length === 0) {
+            setTimeout(() => {
+                const sampleVideos = [
+                    'https://www.youtube.com/watch?v=ml6cT4AZdqI',
+                    'https://www.youtube.com/watch?v=AnYl6Nk9GOA',
+                    'https://www.youtube.com/watch?v=4pKly2JojMw'
+                ];
+                
+                sampleVideos.forEach(video => {
+                    addYouTubeVideo(video);
+                });
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
