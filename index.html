@@ -1851,9 +1851,6 @@
                         </span>
                     </div>
                     <div class="yt-item-actions">
-                        <button class="icon-btn" data-index="${index}" title="Play">
-                            ▶️
-                        </button>
                         <button class="icon-btn" data-index="${index}" title="Delete">
                             🗑️
                         </button>
@@ -1863,20 +1860,13 @@
                 playlistEl.appendChild(item);
             });
             
-            // Add event listeners
+            // Add event listeners for delete buttons
             document.querySelectorAll('.yt-item-actions button').forEach(btn => {
                 const index = parseInt(btn.getAttribute('data-index'));
-                if (btn.textContent.includes('▶️')) {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        loadYouTubeVideo(index);
-                    });
-                } else if (btn.textContent.includes('🗑️')) {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        removeYouTubeVideo(index);
-                    });
-                }
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    removeYouTubeVideo(index);
+                });
             });
             
             // Add click to select video
